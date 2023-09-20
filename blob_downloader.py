@@ -63,15 +63,14 @@ class BlobDownloader:
         """
         parse m3u8 file to get all ts url and transfer it to a local path
         """
-        ts_urls = list()
-        save_path_list = list()
-        local_m3u8_lines = list()
+        ts_urls = []
+        save_path_list = []
+        local_m3u8_lines = []
         total_count, success_count = 0, 0
         with open(m3u8_file, "r") as f:
             for line in f:
                 if line.startswith("#"):
-                    search_res = re.search(r'URI="(.+?)"', line)
-                    if search_res:
+                    if search_res := re.search(r'URI="(.+?)"', line):
                         key_ts = search_res.group(1)
                         if "/" not in key_ts:
                             key_ts_path, key_ts_name = None, key_ts
@@ -141,9 +140,7 @@ class BlobDownloader:
         save_path = os.path.join(self.video_path, self.save_name)
         logger.info("ffmpeg is merging...")
 
-        cmd = 'ffmpeg -allowed_extensions ALL -i "{}" -c copy "{}" -loglevel quiet -y'.format(
-            local_m3u8_file, save_path
-        )
+        cmd = f'ffmpeg -allowed_extensions ALL -i "{local_m3u8_file}" -c copy "{save_path}" -loglevel quiet -y'
         os.system(cmd)
         # i tried ffmpeg-python, but really don't know to make it work. it's too slow
         # ffmpeg.input(local_m3u8_file).concat().output(save_path).global_args('-report').run(overwrite_output=True)  # quiet=True
