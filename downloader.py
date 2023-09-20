@@ -17,13 +17,12 @@ class Downloader:
 
     def run(self, info: str, url_list: List[str], save_path_list: List[str]):
         if not url_list:
-            return list()
+            return []
         loop = asyncio.get_event_loop()
         self.task_id = self.progress.add_task(
             description=f"download {info}", total=len(url_list)
         )
-        result = loop.run_until_complete(self.async_run(url_list, save_path_list))
-        return result
+        return loop.run_until_complete(self.async_run(url_list, save_path_list))
 
     async def async_run(self, url_list: List[str], save_path_list: List[str]):
         assert len(url_list) == len(
@@ -32,7 +31,7 @@ class Downloader:
         with self.progress:
             # make sure session close after all request
             async with self.init_session() as session:
-                tasks = list()
+                tasks = []
                 for url, save_path in zip(url_list, save_path_list):
                     task = asyncio.Task(
                         self.fetch_url(
@@ -100,5 +99,4 @@ class Downloader:
 
     def init_session(self):
         connector = aiohttp.TCPConnector(**ConnectorConfig)
-        _session = aiohttp.ClientSession(headers=Headers, connector=connector)
-        return _session
+        return aiohttp.ClientSession(headers=Headers, connector=connector)

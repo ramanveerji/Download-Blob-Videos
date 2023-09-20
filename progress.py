@@ -40,8 +40,7 @@ class FileCountColumn(ProgressColumn):
             total_str = "?"
 
         download_status = f"{completed_str}/{total_str} {suffix}"
-        download_text = Text(download_status, style="progress.download")
-        return download_text
+        return Text(download_status, style="progress.download")
 
 
 files_progress = Progress(
